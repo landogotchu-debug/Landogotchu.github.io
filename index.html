@@ -524,6 +524,65 @@
     }
     .toast.show { transform: translateY(0); opacity: 1; }
  
+       /* ─── HAMBURGER ─── */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      z-index: 1001;
+      background: none;
+      border: none;
+    }
+    .hamburger span {
+      display: block;
+      width: 26px;
+      height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+ 
+    /* ─── MOBILE NAV MENU ─── */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(10,10,10,0.98);
+      z-index: 1000;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 42px;
+      letter-spacing: 4px;
+      color: var(--white);
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+    .mobile-menu a:hover { color: var(--cyan); }
+    .mobile-menu .mobile-book {
+      margin-top: 16px;
+      background: var(--blue);
+      color: var(--white);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 16px 48px;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      text-decoration: none;
+    }
+    
     /* ─── RESPONSIVE ─── */
     @media (max-width: 900px) {
       nav { padding: 16px 24px; }
@@ -541,12 +600,50 @@
       .stats-bar { gap: 32px; padding: 20px 24px; }
       .form-row { grid-template-columns: 1fr; }
     }
-    @media (max-width: 600px) {
-      .nav-links { gap: 14px; }
-      .nav-links a { font-size: 12px; }
+        @media (max-width: 600px) {
+      /* Nav */
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      nav { padding: 14px 20px; }
+ 
+      /* Hero */
+      .hero-title { font-size: 56px; }
+      .hero-sub { font-size: 14px; letter-spacing: 3px; }
+      .hero-desc { font-size: 14px; }
+      .btn-primary { padding: 14px 28px; font-size: 14px; }
+      .btn-outline { padding: 12px 24px; font-size: 14px; }
+      .hero-inner { gap: 32px; padding: 0 16px; }
+ 
+      /* Stats */
+      .stats-bar { gap: 20px; padding: 16px; flex-wrap: wrap; }
+      .stat-num { font-size: 22px; }
+      .stat-label { font-size: 10px; }
+      .stat { width: 45%; }
+ 
+      /* About */
+      .about-text p { font-size: 14px; }
+      .skill-tag { font-size: 11px; padding: 5px 12px; }
+ 
+      /* Work */
       .work-grid { grid-template-columns: 1fr; }
       .work-card:first-child { grid-column: span 1; }
-      .footer-grid { grid-template-columns: 1fr; }
+ 
+      /* Contact */
+      section { padding: 60px 16px; }
+      .form-group input,
+      .form-group select,
+      .form-group textarea { font-size: 16px; padding: 12px 14px; }
+      .btn-primary { width: 100%; text-align: center; clip-path: none; }
+ 
+      /* Footer */
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+      footer { padding: 48px 20px 24px; }
+      .footer-bottom { flex-direction: column; text-align: center; gap: 16px; }
+      .footer-bottom-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
+      .footer-social { flex-wrap: wrap; }
+ 
+      /* Toast */
+      .toast { left: 16px; right: 16px; bottom: 16px; text-align: center; }
     }
   </style>
 </head>
@@ -561,8 +658,20 @@
       <li><a href="#work">My Work</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
- 
+
+    <!-- ─── MOBILE MENU ─── -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#home" onclick="closeMenu()">Home</a>
+    <a href="#about" onclick="closeMenu()">About Me</a>
+    <a href="#work" onclick="closeMenu()">My Work</a>
+    <a href="#contact" onclick="closeMenu()">Contact</a>
+    <a href="#contact" class="mobile-book" onclick="closeMenu()">📅 Book Now</a>
+  </div>
+
   <!-- ─── HOME / HERO ─── -->
   <section id="home">
     <div class="hero-inner">
@@ -846,6 +955,23 @@
   <div class="toast" id="toast">✓ Booking request sent! I'll be in touch soon.</div>
  
   <script>
+    // Hamburger menu
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+ 
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+      document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+    });
+ 
+    function closeMenu() {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+ 
+    // Active nav highlight on scroll
     const sections = document.querySelectorAll('section[id]');
     const links = document.querySelectorAll('.nav-links a');
  
