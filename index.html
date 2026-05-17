@@ -1007,10 +1007,23 @@
         return;
       }
 
-      const toastEl = document.getElementById('toast');
-      toastEl.classList.add('show');
+      // Create email body
+      const emailBody = `Name: ${fname} ${lname}\nEmail: ${email}\nPhone: ${phone}\nService: ${service}\n\nMessage:\n${message}`;
+      
+      // Create mailto link
+      const mailtoLink = `mailto:Lando.gotchu@gmail.com?subject=Booking Request from ${fname} ${lname}&body=${encodeURIComponent(emailBody)}`;
+      
+      // Open email client or show confirmation
+      window.location.href = mailtoLink;
+      
+      // Show toast notification
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
       setTimeout(() => {
-        toastEl.classList.remove('show');
+        toast.classList.remove('show');
+      }, 4000);
+      
+      // Clear form
         document.getElementById('fname').value = '';
         document.getElementById('lname').value = '';
         document.getElementById('email').value = '';
