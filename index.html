@@ -985,19 +985,55 @@
       });
     });
  
-    function submitForm() {
+       function submitForm() {
       const fname = document.getElementById('fname').value.trim();
+      const lname = document.getElementById('lname').value.trim();
       const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const service = document.getElementById('service').value.trim();
+      const message = document.getElementById('message').value.trim();
+ 
       if (!fname || !email) {
         alert('Please enter your name and email to continue.');
         return;
       }
-      const toast = document.getElementById('toast');
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 4000);
-      ['fname','lname','email','phone','service','message'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
+ 
+      const btn = document.querySelector('.form-submit .btn-primary');
+      btn.textContent = 'Sending...';
+      btn.style.opacity = '0.7';
+ 
+      fetch('https://formspree.io/f/xgoqeevv', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          'First Name': fname,
+          'Last Name': lname,
+          'Email': email,
+          'Phone': phone,
+          'Service': service,
+          'Message': message
+        })
+      })
+      .then(response => {
+        if (response.ok) {
+          const toast = document.getElementById('toast');
+          toast.textContent = '✓ Booking request sent! I\'ll be in touch soon.';
+          toast.classList.add('show');
+          setTimeout(() => toast.classList.remove('show'), 4000);
+          ['fname','lname','email','phone','service','message'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+          });
+        } else {
+          alert('Something went wrong. Please try again or email lando.gotchu@gmail.com directly.');
+        }
+      })
+      .catch(() => {
+        alert('Something went wrong. Please try again or email lando.gotchu@gmail.com directly.');
+      })
+      .finally(() => {
+        btn.textContent = '📅 Send Booking Request';
+        btn.style.opacity = '1';
       });
     }
   </script>
